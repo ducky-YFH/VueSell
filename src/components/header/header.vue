@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <!-- 全部header内容 -->
+    <!-- header上部分内容：详情-->
     <div class="content-wrapper">
       <!-- 头像 -->
       <div class="avatar">
@@ -18,10 +18,20 @@
           <span class="text">{{ seller.supports[0].description }}</span>
         </div>
         <div v-if="seller.supports" class="support-count">
-          <span class="count">{{ seller.supports.length }}</span>
+          <span class="count">{{ seller.supports.length }}个</span>
           <i>></i>
         </div>
       </div>
+    </div>
+    <!-- header下部分内容：公告 -->
+    <div class="bulletin-wrapper">
+      <span class="bulletin-title"></span>
+      <span class="bulletin-text">{{ seller.bulletin }}</span>
+      <i>></i>
+    </div>
+    <!-- 背景 -->
+    <div class="background">
+      <img :src="seller.avatar" alt />
     </div>
   </div>
 </template>
@@ -40,9 +50,11 @@ export default {
 
 <style lang="scss" scoped>
 .header {
+  position: relative;
   color: #fff;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.4);
   .content-wrapper {
+    position: relative;
     padding: 24px 12px 18px 24px;
     font-size: 0;
     .avatar {
@@ -97,11 +109,73 @@ export default {
             @include bg-image("./special_1");
           }
         }
-        .text{
+        .text {
           font-size: 12px;
           line-height: 12px;
         }
       }
+      .support-count {
+        position: absolute;
+        right: 12px;
+        bottom: 18px;
+        padding: 0 8px;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        .count {
+          // vertical-align: middle;
+          font-size: 10px;
+        }
+        i {
+          margin-left: 2px;
+          line-height: 24px;
+          font-size: 10px;
+        }
+      }
+    }
+  }
+  .bulletin-wrapper {
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 28px;
+    line-height: 28px;
+    padding: 0 22px 0 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    .bulletin-title {
+      vertical-align: middle;
+      display: inline-block;
+      width: 22px;
+      height: 12px;
+      @include bg-image("./bulletin");
+      background-size: 22px 12px;
+      background-repeat: no-repeat;
+    }
+    .bulletin-text {
+      margin: 0 4px;
+      font-size: 10px;
+    }
+    i {
+      position: absolute;
+      font-size: 10px;
+      right: 12px;
+      top: 2px;
+    }
+  }
+  .background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    filter: blur(10px);
+    img{
+      width: 100%;
+      height: 100%;
     }
   }
 }
