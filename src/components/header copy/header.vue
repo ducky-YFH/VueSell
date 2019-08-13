@@ -34,40 +34,30 @@
       <img :src="seller.avatar" alt />
     </div>
     <!-- 详情页面 -->
-    <transition name="fade">
-      <div class="detail" v-show="detailShow" @click="detailShow = !detailShow">
-        <div class="detail-wrapper clearfix">
-          <div class="detail-main">
-            <h1 class="name">{{seller.name}}</h1>
-            <star :size="48" :score="seller.score" class="star-wrapper"></star>
-            <div class="title">
-              <div class="line"></div>
-              <div class="text">优惠信息</div>
-              <div class="line"></div>
-            </div>
-            <div class="discounts" v-if="seller.supports">
-              <ul>
-                <li v-for="(item, index) in seller.supports" :key="index">
-                  <span class="icon" :class="classMap[item.type]"></span>
-                  <span class="description">{{ item.description }}</span>
-                </li>
-              </ul>
-            </div>
-            <div class="title">
-              <div class="line"></div>
-              <div class="text">商家公告</div>
-              <div class="line"></div>
-            </div>
-            <div class="bulletin">
-              <p>{{ seller.bulletin }}</p>
-            </div>
+    <div class="detail" v-show="detailShow" @click="detailShow = !detailShow">
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main">
+          <h1 class="name">{{seller.name}}</h1>
+          <star :size="48" :score="seller.score" class="star-wrapper"></star>
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">优惠信息</div>
+            <div class="line"></div>
+          </div>
+          <div class="discounts" v-if="seller.supports">
+            <ul>
+              <li v-for="item in seller.supports" :key="item">
+                <span :class="classMap[seller.supports[0].type]"></span>
+                <span>{{ item.description }}</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="detail-close">
-          <span class="iconfont icon-guanbi"></span>
-        </div>
       </div>
-    </transition>
+      <div class="detail-close">
+        <span class="iconfont icon-guanbi"></span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -76,7 +66,7 @@ import star from '../star/star'
 
 export default {
   data () {
-    return {detailShow: true}
+    return {detailShow: false}
   },
   props: ['seller'],
   created () {
@@ -90,18 +80,6 @@ export default {
 
 <style lang="scss">
 .header {
-  .fade-enter-active,
-  .fade-leave-active {
-    opacity: 1;
-    transition: opacity 0.7s;
-    -webkit-transition: opacity 0.7s;
-  }
-  .fade-enter,
-  .fade-leave {
-    opacity: 0;
-    transition: opacity 0.7s;
-    -webkit-transition: opacity 0.7s;
-  }
   overflow: hidden;
   position: relative;
   color: #fff;
@@ -239,12 +217,11 @@ export default {
     height: 100%;
     z-index: 999;
     background-color: rgba(7, 17, 27, 0.8);
-    backdrop-filter: blur(10px);
     .detail-wrapper {
       width: 100%;
       min-height: 100%;
       .detail-main {
-        margin-top: 32px;
+        margin-top: 64px;
         padding-bottom: 64px;
         .name {
           font-size: 16px;
@@ -271,58 +248,6 @@ export default {
           .text {
             font-size: 14px;
             padding: 0 12px;
-          }
-        }
-        .discounts {
-          ul {
-            width: 80%;
-            margin: 0 auto;
-            li {
-              display: flex;
-              align-items: center;
-              margin-bottom: 12px;
-              font-size: 0;
-              padding: 0 12px;
-              &:last-child {
-                margin-bottom: 0;
-              }
-              .icon {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                margin-right: 16px;
-                background-repeat: no-repeat;
-                background-size: 16px 16px;
-                &.decrease {
-                  @include bg-image("./decrease_2");
-                }
-                &.discount {
-                  @include bg-image("./discount_2");
-                }
-                &.guarantee {
-                  @include bg-image("./guarantee_2");
-                }
-                &.invoice {
-                  @include bg-image("./invoice_2");
-                }
-                &.special {
-                  @include bg-image("./special_2");
-                }
-              }
-              .description {
-                font-size: 14px;
-                font-weight: 200;
-              }
-            }
-          }
-        }
-        .bulletin {
-          width: 80%;
-          margin: 0 auto;
-          p {
-            line-height: 25px;
-            font-size: 14px;
-            font-weight: 200;
           }
         }
       }

@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .tap {
   height: 40px;
   line-height: 40px;
