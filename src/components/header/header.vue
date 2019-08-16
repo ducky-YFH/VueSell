@@ -35,7 +35,7 @@
     </div>
     <!-- 详情页面 -->
     <transition name="fade">
-      <div class="detail" v-show="detailShow" @click="detailShow = !detailShow">
+      <div class="detail" v-show="detailShow">
         <div class="detail-wrapper clearfix">
           <div class="detail-main">
             <h1 class="name">{{seller.name}}</h1>
@@ -64,7 +64,7 @@
           </div>
         </div>
         <div class="detail-close">
-          <span class="iconfont icon-guanbi"></span>
+          <span class="iconfont icon-guanbi" @click="detailShow = !detailShow"></span>
         </div>
       </div>
     </transition>
@@ -76,7 +76,7 @@ import star from '../star/star'
 
 export default {
   data () {
-    return {detailShow: true}
+    return {detailShow: false}
   },
   props: ['seller'],
   created () {

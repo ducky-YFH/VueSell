@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <v-header :seller="seller"></v-header>
     <!-- 导航栏 -->
-    <div class="tap border-1px">
+    <div class="tap">
       <div class="tap-item">
         <router-link to="/goods">商品</router-link>
       </div>
