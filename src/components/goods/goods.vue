@@ -1,11 +1,13 @@
 <template>
   <div class="goods">
+    <!-- ============================left============================ -->
     <div class="menu-wrapper wrapper" ref="left">
       <ul class="menuContent">
         <li
           v-for="(item, index) in goods"
           :key="index"
           class="menu-item"
+          :class="{current: currentIndex === index}"
           @click="selectItem(index, $event)"
         >
           <span class="text">
@@ -15,15 +17,16 @@
         </li>
       </ul>
     </div>
-    <!-- ============================html============================ -->
+    <!-- ============================right============================ -->
     <div class="main-wrapper" ref="right">
       <ul class="mainContent">
         <li class="main-item" v-for="(item, index) in goods" :key="index">
           <h3 class="title">{{ item.name }}</h3>
           <ul>
-            <li class="foods-item" v-for="(food, i) in item.foods" :key="i">
+            <li class="foods-item" v-for="(food, i) in item.foods" :key="i" @click="addToCart(food.name, food.price)">
+              <span class="add">+</span>
               <div class="icon">
-                <img :src="food.icon" width alt />
+                <img :src="food.icon" alt />
               </div>
               <div class="detail">
                 <h3>{{ food.name }}</h3>
@@ -39,13 +42,16 @@
         </li>
       </ul>
     </div>
-    <!-- ============================html============================ -->
+    <!-- 底部通栏 -->
+    <shoppingCart></shoppingCart>
+    <!-- ============================right============================ -->
   </div>
 </template>
 
 // ================================Script================================
 <script>
 import BScroll from 'better-scroll'
+import shoppingCart from 'components/shoppingCart/shoppingCart'
 const ERR_OK = 0
 
 export default {
@@ -55,8 +61,13 @@ export default {
       classMap: ['decrease', 'discount', 'guarantee', 'invoice', 'special'],
       listHeight: [],
       scrollY: 0,
-      clickEvent: false
+      clickEvent: false,
+      foodCount: 0,
+      foodList: []
     }
+  },
+  components: {
+    shoppingCart
   },
   methods: {
     getGoods () {
@@ -73,6 +84,7 @@ export default {
         click: true
       })
       this.right = new BScroll(this.$refs.right, {
+        click: true,
         probeType: 3
       })
       this.right.on('scroll', (pos) => {
@@ -83,6 +95,7 @@ export default {
       let rightItems = this.$refs.right.getElementsByClassName('main-item')
       let height = 0
       this.listHeight.push(height)
+      console.log(rightItems.length)
       for (let i = 0; i < rightItems.length; i++) {
         const el = rightItems[i]
         height += el.clientHeight
@@ -98,33 +111,52 @@ export default {
         let el = rightItems[index]
         this.right.scrollToElement(el, 300)
       }
+    },
+    addToCart (name, price) {
+      this.foodCount += 1
+      if (this.foodList.length !== 0) {
+        this.foodList.some((item) => {
+          if (item.name === name) {
+            item.count++
+            return ''
+          }
+        })
+        let foodName = this.foodList.find((item) => {
+          return item.name === name
+        })
+        if (typeof foodName === 'undefined') {
+          this.foodList.push({name: name, price: price, count: 1})
+        }
+        console.log(this.foodList)
+      } else {
+        this.foodList.push({name: name, price: price, count: 1})
+      }
+      this.$store.commit('countAdd', this.foodCount)
     }
   },
   created () {
     this.getGoods()
   },
   mounted () {
-    this.$nextTick(() => {
-      this._initScroll()
-      this._getHeight()
-    })
+    setTimeout(() => {
+      this.$nextTick(() => {
+        this._initScroll()
+        this._getHeight()
+      })
+    }, 500)
   },
   computed: {
     currentIndex () {
       for (let i = 0; i < this.listHeight.length; i++) {
         let height = this.listHeight[i]
         let height2 = this.listHeight[i + 1]
+        // 当height2不存在的时候，或者落在height和height2之间的时候，直接返回当前索引
+        // >=height，是因为一开始this.scrollY=0,height=0
         if (!height2 || (this.scrollY >= height && this.scrollY < height2)) {
           return i
         }
-        if (this.listHeight[this.listHeight.length - 1] - this.$refs.right.clientHeight <= this.scrollY) {
-          if (this.clickTrue) {
-            return this.currentNum
-          } else {
-            return (this.listHeight.length - 1)
-          }
-        }
       }
+      // 如果this.listHeight没有的话，就返回0
       return 0
     }
   }
@@ -152,6 +184,9 @@ export default {
       line-height: 14px;
       padding: 0 12px;
       font-size: 14px;
+      &.current {
+        background-color: #ffffff;
+      }
       .icon {
         display: inline-block;
         width: 12px;
@@ -188,6 +223,7 @@ export default {
     flex: 1;
     .mainContent {
       position: absolute;
+      width: 100%;
     }
     .main-item {
       .title {
@@ -200,6 +236,7 @@ export default {
         border-left: 1px solid #dcdfe4;
       }
       .foods-item {
+        position: relative;
         display: flex;
         align-items: flex-start;
         padding: 20px 15px;
@@ -242,6 +279,17 @@ export default {
               text-decoration: line-through;
             }
           }
+        }
+        .add {
+          position: absolute;
+          width: 20px;
+          line-height: 20px;
+          background-color: #00a0dc;
+          border-radius: 50%;
+          text-align: center;
+          color: #fff;
+          right: 100px;
+          bottom: 2.5vh;
         }
       }
     }
