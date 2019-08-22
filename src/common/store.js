@@ -4,15 +4,30 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    foodCount: 0
+    foodList: [],
+    //  判断food组件是否显示
+    foodShow: false
   },
   mutations: {
-    countAdd (state, foodCount) {
-      this.state.foodCount = foodCount
+    addToList (state, foodList) {
+      state.foodList = foodList
     }
   },
   getters: {
-
+    getCount (state) {
+      let count = 0
+      state.foodList.forEach(item => {
+        count += item.count
+      })
+      return count
+    },
+    getPrice (state) {
+      let price = 0
+      state.foodList.forEach(item => {
+        price += item.price * item.count
+      })
+      return price
+    }
   }
 })
 

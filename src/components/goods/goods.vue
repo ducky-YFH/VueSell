@@ -23,8 +23,28 @@
         <li class="main-item" v-for="(item, index) in goods" :key="index">
           <h3 class="title">{{ item.name }}</h3>
           <ul>
-            <li class="foods-item" v-for="(food, i) in item.foods" :key="i" @click="addToCart(food.name, food.price)">
-              <span class="add">+</span>
+            <li
+              class="foods-item"
+              v-for="(food, i) in item.foods"
+              :key="i"
+              @click="selectFood(food)"
+            >
+              <!-- 小球 -->
+              <div class="ball"></div>
+              <!-- 减去 -->
+              <transition>
+                <span
+                  v-show="everyCount(food.name) > 0"
+                  class="del"
+                  @click.stop="addOrDel(food.name, food.price, flag=false);"
+                >-</span>
+              </transition>
+              <!-- 数量 -->
+              <transition>
+                <span v-show="everyCount(food.name) > 0" class="count">{{ everyCount(food.name) }}</span>
+              </transition>
+              <!-- 添加 -->
+              <span class="add" @click.stop="addOrDel(food.name, food.price, flag=true)">+</span>
               <div class="icon">
                 <img :src="food.icon" alt />
               </div>
@@ -42,8 +62,10 @@
         </li>
       </ul>
     </div>
-    <!-- 底部通栏 -->
+    <!-- 底部结算组件 -->
     <shoppingCart></shoppingCart>
+    <!-- 食物详细信息组件 -->
+    <food v-if="this.$store.state.foodShow" :food='food'></food>
     <!-- ============================right============================ -->
   </div>
 </template>
@@ -52,6 +74,7 @@
 <script>
 import BScroll from 'better-scroll'
 import shoppingCart from 'components/shoppingCart/shoppingCart'
+import food from 'components/food/food'
 const ERR_OK = 0
 
 export default {
@@ -62,12 +85,14 @@ export default {
       listHeight: [],
       scrollY: 0,
       clickEvent: false,
-      foodCount: 0,
-      foodList: []
+      flag: false,
+      foodList: this.$store.state.foodList,
+      food: ''
     }
   },
   components: {
-    shoppingCart
+    shoppingCart,
+    food
   },
   methods: {
     getGoods () {
@@ -112,13 +137,15 @@ export default {
         this.right.scrollToElement(el, 300)
       }
     },
-    addToCart (name, price) {
-      this.foodCount += 1
+    addOrDel (name, price, flag) {
+      this.foodList = this.$store.state.foodList
       if (this.foodList.length !== 0) {
-        this.foodList.some((item) => {
-          if (item.name === name) {
+        this.foodList.some((item, index) => {
+          if (item.name === name && flag) {
             item.count++
-            return ''
+          }
+          if (item.name === name && !flag) {
+            item.count--
           }
         })
         let foodName = this.foodList.find((item) => {
@@ -127,11 +154,21 @@ export default {
         if (typeof foodName === 'undefined') {
           this.foodList.push({name: name, price: price, count: 1})
         }
-        console.log(this.foodList)
-      } else {
+      }
+      if (this.foodList.length === 0 && flag) {
         this.foodList.push({name: name, price: price, count: 1})
       }
-      this.$store.commit('countAdd', this.foodCount)
+      // 清除$store.state.foodList里count为0的对象
+      this.foodList.forEach((item, index) => {
+        if (item.count === 0) {
+          this.foodList.splice(index, 1)
+        }
+      })
+      this.$store.commit('addToList', this.foodList)
+    },
+    selectFood (food) {
+      this.$store.state.foodShow = true
+      this.food = food
     }
   },
   created () {
@@ -158,6 +195,17 @@ export default {
       }
       // 如果this.listHeight没有的话，就返回0
       return 0
+    },
+    everyCount (name) {
+      return function (name) {
+        let count = 0
+        this.foodList.forEach(item => {
+          if (item.name === name) {
+            count = item.count
+          }
+        })
+        return count
+      }
     }
   }
 }
@@ -291,8 +339,54 @@ export default {
           right: 100px;
           bottom: 2.5vh;
         }
+        .del {
+          position: absolute;
+          width: 19px;
+          line-height: 19px;
+          border-radius: 50%;
+          font-weight: bold;
+          text-align: center;
+          color: #00a0dc;
+          border: 1px solid #00a0dc;
+          right: 140px;
+          bottom: 2.5vh;
+        }
+        .count {
+          position: absolute;
+          width: 19px;
+          line-height: 19px;
+          font-size: 12px;
+          font-weight: bold;
+          text-align: center;
+          color: #b1b5ba;
+          right: 120px;
+          bottom: 2.5vh;
+        }
+        .ball {
+          display: none;
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          background-color: red;
+          border-radius: 50%;
+          position: absolute;
+          bottom: 3vh;
+          z-index: 111;
+          right: 102px;
+        }
       }
     }
+  }
+  .v-enter,
+  .v-leave-to {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  .v-enter-active {
+    transition: all 0.4s ease;
+  }
+  .v-leave-active {
+    transition: all 0 ease;
   }
 }
 </style>
