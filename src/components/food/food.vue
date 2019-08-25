@@ -20,6 +20,7 @@
           </span>
         </div>
       </div>
+      <!-- 中部（详细介绍） -->
       <div class="center" v-if="food.info">
         <h3>商品介绍</h3>
         <p>{{ food.info }}</p>

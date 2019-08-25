@@ -90,6 +90,10 @@ export default {
 
 <style lang="scss">
 .header {
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.4);
   .fade-enter-active,
   .fade-leave-active {
     opacity: 1;
@@ -102,10 +106,6 @@ export default {
     transition: opacity 0.7s;
     -webkit-transition: opacity 0.7s;
   }
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.4);
   .content-wrapper {
     position: relative;
     padding: 24px 12px 18px 24px;
@@ -237,7 +237,7 @@ export default {
     top: 0;
     width: 100%;
     height: 100%;
-    z-index: 999;
+    z-index: 11111;
     background-color: rgba(7, 17, 27, 0.8);
     backdrop-filter: blur(10px);
     .detail-wrapper {

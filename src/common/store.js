@@ -6,7 +6,8 @@ const store = new Vuex.Store({
   state: {
     foodList: [],
     //  判断food组件是否显示
-    foodShow: false
+    foodShow: false,
+    collect: []
   },
   mutations: {
     addToList (state, foodList) {
