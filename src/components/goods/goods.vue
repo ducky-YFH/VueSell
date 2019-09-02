@@ -65,7 +65,9 @@
     <!-- 底部结算组件 -->
     <shoppingCart></shoppingCart>
     <!-- 食物详细信息组件 -->
-    <food v-if="this.$store.state.foodShow" :food='food'></food>
+    <transition name="food">
+      <food v-if="this.$store.state.foodShow" :food="food"></food>
+    </transition>
     <!-- ============================right============================ -->
   </div>
 </template>
@@ -387,6 +389,14 @@ export default {
   }
   .v-leave-active {
     transition: all 0 ease;
+  }
+  .food-enter,
+  .food-leave-to{
+    transform: translateX(500px)
+  }
+  .food-enter-active,
+  .food-leave-active{
+    transition: all 0.5s ease;
   }
 }
 </style>

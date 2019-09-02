@@ -16,9 +16,11 @@
     </div>
     <!-- 内容区域 -->
     <div class="content">
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
+      <transition>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
     </div>
   </div>
 </template>
@@ -49,6 +51,15 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.v-enter,
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(150px);
+}
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.3s ease;
+}
 .tap {
   height: 40px;
   line-height: 40px;

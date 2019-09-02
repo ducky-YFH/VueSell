@@ -266,12 +266,11 @@ export default {
   }
   .v-enter,
   .v-leave-to {
-    opacity: 0;
-    transform: translateY(100px);
+    transform: translateY(200px);
   }
   .v-enter-active,
   .v-leave-active {
-    transition: all 0.7s ease;
+    transition: all 0.5s ease;
   }
 }
 </style>
